@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
-import { Play, StopCircle, Upload, Download } from 'lucide-react';
+import { Play, Upload } from 'lucide-react';
 
-export default function TradePanel({ symbol, latestPrice, onPlaceOrder, suggested }) {
+export default function TradePanel({ symbol, latestPrice, onPlaceOrder, suggested, marketOpen }) {
   const [qty, setQty] = useState(1);
   const [orderType, setOrderType] = useState('BUY');
   const [target, setTarget] = useState(suggested?.target ?? '');
@@ -10,7 +10,7 @@ export default function TradePanel({ symbol, latestPrice, onPlaceOrder, suggeste
   const valid = useMemo(() => qty > 0 && (orderType === 'BUY' || orderType === 'SELL'), [qty, orderType]);
 
   const place = () => {
-    if (!valid) return;
+    if (!valid || !marketOpen) return;
     const payload = {
       symbol,
       side: orderType,
@@ -52,8 +52,8 @@ export default function TradePanel({ symbol, latestPrice, onPlaceOrder, suggeste
         <div className="font-mono text-white">{latestPrice?.toFixed(2)}</div>
       </div>
 
-      <button disabled={!valid} onClick={place} className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-700 text-white rounded px-4 py-2">
-        <Play size={16}/> Place Paper Order
+      <button disabled={!valid || !marketOpen} onClick={place} className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-700 text-white rounded px-4 py-2">
+        <Play size={16}/> {marketOpen ? 'Place Paper Order' : 'Market Closed'}
       </button>
 
       <div className="text-xs text-gray-400 flex items-center gap-2">

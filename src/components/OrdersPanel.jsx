@@ -9,7 +9,7 @@ export default function OrdersPanel({ orders = [] }) {
           <div className="px-4 py-6 text-sm text-gray-400">No orders yet. Place a paper order to see it here.</div>
         )}
         {orders.map((o, idx) => {
-          const pnl = o.side === 'BUY' ? (o.target ?? o.price) - o.price : o.price - (o.target ?? o.price);
+          const pnl = o.side === 'BUY' ? ((o.closed && o.target) ? o.target - o.price : (o.price)) - o.price : (o.price - ((o.closed && o.target) ? o.target : o.price));
           const status = o.closed ? 'Closed' : 'Open';
           return (
             <div key={idx} className="px-4 py-3 grid grid-cols-2 sm:grid-cols-6 gap-2 text-sm">
